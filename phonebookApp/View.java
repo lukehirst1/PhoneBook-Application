@@ -22,6 +22,8 @@ public class View
     Controller controller;
     Label  text1, text2;
     TextField  info, field2;
+    Image contactIcon;
+    ImageView iv;
     
     String[] options = {"addContact", "removeContact", "listContacts", "getContact", "openPhoneBook", "deleteBook", "deleteall"};
     
@@ -36,11 +38,7 @@ public class View
         gP.setId("Layout");
         buttonPane = new TilePane();
         buttonPane.setId("Buttons");
-        
-       // ImageView imageView = new ImageView(".png");
-        
-       // gP.getChildren().add(imageView);
-        
+    
         text1 = new Label("The following options are: Add a Contact, Remove a contact, list contacts, open phoneBook, deleteBook, delete All contacts");
         gP.add(text1, 0, 0);
         
@@ -53,7 +51,10 @@ public class View
         field2 = new TextField();
         gP.add(field2, 1, 2);
         
-       // gP.add(imageView, 2, 2);
+        // Add a new contact icon to the screen
+        contactIcon = new Image("/contactIcon.png");
+        iv = new ImageView(contactIcon);
+        gP.add(iv, 1, 3);
         
         String[] buttonText = { "Add Contact", "Remove Contact", "List Contacts", "Get Contact", "Open Phonebook", "Delete book", "Delete All contacts" };
         

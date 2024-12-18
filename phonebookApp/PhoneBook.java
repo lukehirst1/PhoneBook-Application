@@ -17,8 +17,6 @@ public class PhoneBook
      * in alphabetical order.
      */
     protected TreeMap<String, String> phoneNumbers;
-    View view = new View();
-    Model model = new Model();
 
     /**
      * constructor for objects of class PhoneBook

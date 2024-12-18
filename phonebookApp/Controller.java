@@ -34,6 +34,11 @@ public class Controller
                 
             case "Remove Contact":
                 model.deleteContact();
+                break;
+                
+            case "Delete All contacts":
+                model.deleteAll();
+                break;
                 
             default:
                 break;

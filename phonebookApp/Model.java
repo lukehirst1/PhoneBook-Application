@@ -50,14 +50,11 @@ public class Model
         if (sPB == null) 
         {
             view.text1.setText("No phonebook loaded");
-            view.text2.setVisible(false);
         } 
         else 
         {
             String contacts = phoneBook.listing();
             view.text1.setText("The following contacts are listed: " + contacts);
-            view.text2.setVisible(false);
-            phoneBook.printListing();
         }
     }
     
@@ -66,6 +63,42 @@ public class Model
      */
     public void addContact()
     {
+        if (sPB == null)
+        {
+            view.text1.setText("No phonebook loaded");
+        }
+        else
+        {
+            String addName = view.info.getText();
+            String addNumber = view.field2.getText();
+        if (view.info.getText().isEmpty())
+        {
+            view.text1.setText("Sorry, I cannot add empty values to the file. Please fill in all boxes before continuing");
+            view.text2.setText("You need to fill in the contact name field. This is the top box.");
+        }
+        else if (view.field2.getText().isEmpty())
+        {
+            view.text1.setText("Sorry, I cannot add empty values to the file. Please fill in all boxes before continuing");
+            view.text2.setText("You need to fill in the contact number field. This is the bottom box.");
+        }
+        else if (view.info.getText().isEmpty() && view.field2.getText().isEmpty())
+        {
+            view.text1.setText("I can't work with empty values. Please fill in all boxes before continuing");
+            view.text2.setText("You need to fill in both boxes");
+        }
+        else
+        {
+            view.text1.setText("Contact added to phone book");
+            view.text2.setText("What would you like to do next?");
+            sPB.addPhoneNumber(addName, addNumber);
+            sPB.save();
+        }
+    }
+}
+         /**
+          * This is old code from the console app. For legacy purposes, this will be kept here.
+          */   
+        /*
         while (true)
         {
             if (sPB == null) 
@@ -75,7 +108,11 @@ public class Model
             else 
             {
                 String addName = view.info.getText();
+                String addNumber = view.field2.getText();
+                
+
                 // In this instance, we don't want the program to accept "name" as a result, so this switch provides a check to ensure this doesn't happen.
+            /*
             switch (addName)
             {
                 case "name", "Name", "nAmE":
@@ -93,7 +130,6 @@ public class Model
                 }
                         
             }  
-            String addNumber = view.field2.getText();
             // Here, I want to catch "number", and ban it from being added into the phonebook.
             switch (addNumber)
             {
@@ -110,6 +146,7 @@ public class Model
                     break;
                 }
             }
+            
             if (view.info.getText().isEmpty())
             {
                 view.text1.setText("Sorry, I cannot add empty values to the file. Please fill in all boxes before continuing");
@@ -123,22 +160,18 @@ public class Model
             else
             {
                 view.text1.setText("Contact added to phone book");
-                view.text2.setText("");
+                view.text2.setVisible(false);
                 sPB.addPhoneNumber(addName, addNumber);
                 sPB.save();   
             }
             break;
-        }
-    }
-}
+            */
     
     /**
      * Gets the information of a contact from the phoneBook if it is not null.
      */
     public void getContact()
     {
-        while (true)
-        {
             if (sPB == null) 
             {
                  view.text1.setText("No phonebook loaded");
@@ -150,8 +183,6 @@ public class Model
                 String number = sPB.getPhoneNumber(name);
                 view.text1.setText("The following contact details are: " + "Name of contact: " + name + " Number: " + number);
             }
-            break;   
-        }
     }
     
     /**
@@ -159,64 +190,70 @@ public class Model
      */
     public void deleteContact()
     {
-        while (true)
+        if (sPB == null)
         {
-            if (sPB == null)
-            {
-                 view.text1.setText("Sorry, you have no phonebook loaded.");
-            }
-            else
-            {
-                // Which contact is to be removed?
-                System.out.println("Please input the name and number of the contact you would like to delete from the phonebook.");
-                String name = view.info.getText();
-                String number = view.field2.getText();
-                // Confirms that the contact has been removed from phone book.
-                view.text1.setText("Contact deleted from phone book");
-                sPB.removePhoneNumber(name, number);
-                sPB.save();
-            }
-            break;
+            view.text1.setText("Sorry, you have no phonebook loaded.");
+        }
+        else
+        {
+            /**
+             * What contact will be deleted from the phoneBook?
+             */
+            // Redundant - System.out.println("Please input the name and number of the contact you would like to delete from the phonebook.");
+            String name = view.info.getText();
+            String number = view.field2.getText();
+            // Confirms that the contact has been removed from phone book.
+            view.text1.setText("Contact deleted from phone book");
+            sPB.removePhoneNumber(name, number);
+            sPB.save();
         }
     }
     /**
      * Removes all contacts from a phone book.
      */
-    public void deleteAll()
+public void deleteAll()
+{
+    if (sPB == null)
     {
-        while (true) {
-        System.out.println("WARNING! THIS WILL CLEAR YOUR CURRENT PHONE BOOK!");
-        System.out.println("Do you wish to proceed?");
-        String confirm = "";
+        view.text1.setText("Sorry, you have no phonebook loaded.");
+    }
+    else
+    {
+        view.text1.setText("WARNING! THIS WILL CLEAR YOUR CURRENT PHONE BOOK!");
+        view.text2.setText("Do you wish to proceed?");
+        String confirm = view.info.getText();
         switch (confirm)
         {
             case "no", "No":
             {
-                System.out.println("Returning to menu");
-                continue;
+                view.text1.setText("Returning to menu");
+                view.text1.setText("What would you like to do next?");
+                view.text2.setText("");
+                return;
             }
             case "yes", "Yes":
             {
                 if (sPB == null)
                 {
-                    System.out.format("Sorry, you have no phonebook loaded%n");
-                    continue;
+                    view.text1.setText("Sorry, you have no phonebook loaded.");
+                    break;
                 }
                 else
                 {
                     sPB.phoneNumbers.clear();
-                    System.out.println("Phone book cleared.");
+                    view.text1.setText("Phone book cleared.");
+                    view.text2.setText("");
                     sPB.save();
-                    continue;   
+                    break;
                 }
             }
-                default:
-                {
-                    break;
-                }   
+            default:
+            {
+                break;
             }
         }
     }
+}
     /**
      * Deletes a phoneBook from the system.
      */
