@@ -20,6 +20,80 @@ public class Model
         System.exit(0);
     }
     
+    public void HelpRequested()
+    {
+        view.text1.setText("What do you need help with?");
+        view.text2.setText("");
+        String help = view.info.getText();
+        view.field2.setVisible(false);
+        
+        switch (help)
+        {
+            case "Removing a contact", "remove contact", "How do I remove a contact?":
+                {
+                    view.text1.setText("To remove a contact from the phoneBook, you need to ensure that a active phoneBook is loaded.");
+                    view.text2.setText("Then, you navigate to Remove Contact, and input the contact's details, and press Remove Contact");
+                    view.text3.setText("Is there anything else I can help you with?");
+                    break;
+                }
+            
+            case "Adding a contact", "add contact", "How do I add a contact to an existing phoneBook?", "How do I add a contact?":
+            {
+                view.text1.setText("To add a contact to a existing phoneBook, you need to ensure that a active phoneBook is loaded");
+                view.text2.setText("Then, you navigate to Add Contact, and input the contact's details, and press Add Contact");
+                view.text3.setText("Is there anything else I can help you with?");
+                break;
+            }
+            
+            case "Open a Phonebook", "open phonebook", "How do I open a phonebook?":
+            {
+                view.text1.setText("To open a phonebook, navigate to Open Phonebook, and write the phonebook that you wish to open in the text field.");
+                view.text2.setText("Is there anything else I can help you with?");
+                break;
+            }
+            
+            case "List all contacts", "list contacts", "How can I list all of my contacts?":
+            {
+                break;
+            }
+            
+            case "Get a contact", "get contact", "How can I get a contact's information?":
+            {
+                view.text1.setText("To get the information of a contact, navigate to Get Contact, and write the contact's details in the fields");
+                view.text2.setText("Then, press Get Contact. Your contact's details will be listed on the screen.");
+                view.text3.setText("Is there anything else I can help you with?");
+                break;
+            }
+            
+            case "Delete a phonebook", "delete book", "How can I delete a phonebook?":
+            {
+                view.text1.setText("To delete a phonebook, navigate to Delete Book, and ensure that a phonebook is already loaded.");
+                view.text2.setText("It will warn you that it is irreversible. Type Yes, and it will remove it from your system.");
+                view.text3.setText("Is there anything else I can help you with?");
+                break;
+            }
+            
+            case "Delete all contacts", "How can I delete all contacts from a phonebook?":
+            {
+                    view.text1.setText("To remove all contacts from the phoneBook, you need to ensure that a active phoneBook is loaded.");
+                    view.text2.setText("Then, you navigate to Delete All contacts and Delete All contacts");
+                    view.text3.setText("Is there anything else I can help you with?");
+            }
+            
+            case "That was all", "No thanks", "Thank you, but no", "Nope, that was all thanks!", "no", "No":
+                {
+                    view.text1.setText("Glad to hear it. Please don't hesitate to ask again");
+                    view.text2.setText("What would you like to do next?");
+                    view.text3.setText("");
+                    return;
+                }
+            default:
+                {
+                    return;
+                }
+        }
+    }
+    
     /**
      * Open the requested phoneBook, or if there is not already one, then create one.
      */
@@ -38,7 +112,6 @@ public class Model
             sPB.load();
             view.text1.setText("Phonebook name: " + filename + " loaded");
             view.text2.setText("The following options are: Add a Contact, Remove a contact, list contacts, open phoneBook, deleteBook, delete All contacts");
-            view.field2.setVisible(true);
         }
     }
     
@@ -66,30 +139,34 @@ public class Model
         if (sPB == null)
         {
             view.text1.setText("No phonebook loaded");
+            view.field2.setVisible(false);
         }
         else
         {
             String addName = view.info.getText();
             String addNumber = view.field2.getText();
+            
         if (view.info.getText().isEmpty())
         {
             view.text1.setText("Sorry, I cannot add empty values to the file. Please fill in all boxes before continuing");
             view.text2.setText("You need to fill in the contact name field. This is the top box.");
         }
-        else if (view.field2.getText().isEmpty())
+        if (view.field2.getText().isEmpty())
         {
             view.text1.setText("Sorry, I cannot add empty values to the file. Please fill in all boxes before continuing");
             view.text2.setText("You need to fill in the contact number field. This is the bottom box.");
         }
-        else if (view.info.getText().isEmpty() && view.field2.getText().isEmpty())
+        if (view.info.getText().isEmpty() && view.field2.getText().isEmpty())
         {
             view.text1.setText("I can't work with empty values. Please fill in all boxes before continuing");
             view.text2.setText("You need to fill in both boxes");
+            view.field2.setVisible(true);
         }
         else
         {
             view.text1.setText("Contact added to phone book");
             view.text2.setText("What would you like to do next?");
+            view.field2.setVisible(false);
             sPB.addPhoneNumber(addName, addNumber);
             sPB.save();
         }
@@ -202,10 +279,33 @@ public class Model
             // Redundant - System.out.println("Please input the name and number of the contact you would like to delete from the phonebook.");
             String name = view.info.getText();
             String number = view.field2.getText();
-            // Confirms that the contact has been removed from phone book.
-            view.text1.setText("Contact deleted from phone book");
-            sPB.removePhoneNumber(name, number);
-            sPB.save();
+            
+            /**
+             * Are the fields filled in properly?
+             */
+            if (view.info.getText().isEmpty())
+            {
+                view.text1.setText("I can't delete a contact without both fields being filled in.");
+                view.text2.setText("You need to fill in the top field.");
+            }
+            if (view.field2.getText().isEmpty())
+            {
+                view.text1.setText("I can't delete a contact without both fields being filled in.");
+                view.text2.setText("You need to fill in the bottom field.");
+            }
+            if (view.field2.getText().isEmpty() && view.info.getText().isEmpty())
+            {
+                view.text1.setText("I can't delete a contact without both fields being filled in.");
+                view.text2.setText("You need to fill in both fields.");
+            }
+            else
+            {
+                // Confirms that the contact has been removed from phone book.
+                view.text1.setText("Contact deleted from phone book");
+                view.text2.setText("What would you like to do next?");
+                sPB.removePhoneNumber(name, number);
+                sPB.save();   
+            }
         }
     }
     /**
@@ -259,6 +359,55 @@ public void deleteAll()
      */
     public void removeBook()
     {
+        if (sPB == null)
+        {
+            view.text1.setText("Sorry, you have no phonebook loaded.");
+        }
+        else
+        {
+            view.text1.setText("WARNING! THIS WILL DELETE THE CURRENT PHONE BOOK!");
+            view.text2.setText("THIS CHANGE IS IRREVERSIBLE!!");
+            view.text3.setText("Do you wish to proceed?");
+            String confirm = view.info.getText();
+            
+            switch (confirm)
+            {
+                case "no", "No":
+                {
+                    view.text1.setText("What would you like to do next?");
+                    view.text2.setText("");
+                    view.text3.setText("");
+                    return;
+                }
+                case "yes", "Yes":
+                {
+                    if (sPB == null)
+                    {
+                        view.text1.setText("Sorry, you have no phonebook loaded.");
+                        view.text2.setText("");
+                        view.text3.setText("");
+                        return;
+                    }
+                    else
+                    {
+                        sPB.delete();
+                        view.text1.setText("File deleted.");
+                        view.text2.setText("What would you like to do next?");
+                        view.text3.setText("");
+                        return;
+                    }
+                }
+                default:
+                {
+                    break;
+                }
+            }
+        }
+        
+        /**
+         * Obsolete code. Kept for legacy purposes.
+         */
+        /*
         while (true)
         {
             System.out.println("WARNING! THIS WILL DELETE THE CURRENT PHONE BOOK!");
@@ -289,5 +438,6 @@ public void deleteAll()
                 }
             }
         }
+        */
     }
 }

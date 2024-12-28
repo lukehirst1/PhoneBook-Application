@@ -20,7 +20,7 @@ public class View
     
     Model model;
     Controller controller;
-    Label  text1, text2;
+    Label  text1, text2, text3;
     TextField  info, field2;
     Image contactIcon;
     ImageView iv;
@@ -45,6 +45,9 @@ public class View
         text2 = new Label("What would you like to do first?");
         gP.add(text2, 0, 1);
         
+        text3 = new Label("");
+        gP.add(text3, 0, 2);
+        
         info = new TextField();
         gP.add(info, 1,1 );
         
@@ -56,7 +59,7 @@ public class View
         iv = new ImageView(contactIcon);
         gP.add(iv, 1, 3);
         
-        String[] buttonText = { "Add Contact", "Remove Contact", "List Contacts", "Get Contact", "Open Phonebook", "Delete book", "Delete All contacts" };
+        String[] buttonText = { "Add Contact", "Remove Contact", "List Contacts", "Help", "Get Contact", "Open Phonebook", "Delete book", "Delete All contacts" };
         
         for(String text : buttonText) {
             Button btn = new Button(text);
@@ -66,6 +69,7 @@ public class View
         
         gP.add(buttonPane, 1, 9);
         Scene s = new Scene(gP, H, W);
+        field2.setVisible(false);
         window.setScene(s);
         window.show();
     }

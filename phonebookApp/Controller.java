@@ -40,6 +40,14 @@ public class Controller
                 model.deleteAll();
                 break;
                 
+            case "Delete book":
+                model.removeBook();
+                break;
+                
+            case "Help":
+                model.HelpRequested();
+                break;
+                
             default:
                 break;
         }
