@@ -17,6 +17,7 @@ public class PhoneBook
      * in alphabetical order.
      */
     protected TreeMap<String, String> phoneNumbers;
+    View view = new View();
 
     /**
      * constructor for objects of class PhoneBook
@@ -87,7 +88,7 @@ public class PhoneBook
      */
     public String listing()
     {
-        String list = ""; 
+        String list = "";
         // use keySet to return the Set of map keys. 
         // Sets are ok to use in an enhanced for loop, and in TreeMap, the set is
         // traversed in alphabetical order.
@@ -99,11 +100,27 @@ public class PhoneBook
         return list;
     }
     
+    public String listingApp()
+    {
+        String list = view.info.getText();
+        
+        for (String name:phoneNumbers.keySet())
+        {
+            list += name + ":" + phoneNumbers.get(name) + "";
+        }
+        return list;
+    }
+    
     /**
      * prints a listing of the PhoneBook on the Console output
      */
     public void printListing()
     {
-          System.out.print(listing());
+        System.out.print(listing());
+    }
+    
+    public void printListApp()
+    {
+        view.text1.setText(listingApp());
     }
 }

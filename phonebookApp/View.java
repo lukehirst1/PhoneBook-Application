@@ -25,7 +25,7 @@ public class View
     Image contactIcon;
     ImageView iv;
     
-    String[] options = {"addContact", "removeContact", "listContacts", "getContact", "openPhoneBook", "deleteBook", "deleteall"};
+    String[] options = {"addContact", "removeContact", "listContacts", "help", "getContact", "openPhoneBook", "deleteBook", "deleteall"};
     
     GridPane gP;
     TilePane buttonPane;

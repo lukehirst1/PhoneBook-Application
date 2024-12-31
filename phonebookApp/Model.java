@@ -1,4 +1,6 @@
 package phonebookApp;
+import java.io.FileReader;
+
 /**
  * Write a description of class Model here.
  *
@@ -54,6 +56,8 @@ public class Model
             
             case "List all contacts", "list contacts", "How can I list all of my contacts?":
             {
+                view.text1.setText("To list all contacts in a phonebook, navigate to List Contacts, and click the button");
+                view.text2.setText("Please note: This will open a seperate console window, which can be closed without shutting down the program");
                 break;
             }
             
@@ -87,7 +91,7 @@ public class Model
                     view.text3.setText("");
                     return;
                 }
-            default:
+                default:
                 {
                     return;
                 }
@@ -123,11 +127,26 @@ public class Model
         if (sPB == null) 
         {
             view.text1.setText("No phonebook loaded");
-        } 
-        else 
+        }
+        
+        else
         {
-            String contacts = phoneBook.listing();
-            view.text1.setText("The following contacts are listed: " + contacts);
+            try
+            {
+                String file = view.info.getText();
+               FileReader fr = new FileReader(file);
+               int content = fr.read();
+               while (content != -1)
+               {
+                   System.out.print((char)content);
+                   content = fr.read();
+               }
+               fr.close();
+            }
+            catch (Exception e)
+            {
+                view.text1.setText("File not recognised");
+            }
         }
     }
     
@@ -166,7 +185,7 @@ public class Model
         {
             view.text1.setText("Contact added to phone book");
             view.text2.setText("What would you like to do next?");
-            view.field2.setVisible(false);
+            view.field2.setText("");
             sPB.addPhoneNumber(addName, addNumber);
             sPB.save();
         }
@@ -253,6 +272,23 @@ public class Model
             {
                  view.text1.setText("No phonebook loaded");
                  view.text2.setText("");
+            }
+            
+            if (view.info.getText().isEmpty())
+            {
+                view.text1.setText("Sorry, I cannot get empty values from the file. Please fill in all boxes before continuing");
+                view.text2.setText("You need to fill in the contact name field. This is the top box.");
+            }
+            if (view.field2.getText().isEmpty())
+            {
+                view.text1.setText("Sorry, I cannot get empty values from the file. Please fill in all boxes before continuing");
+                view.text2.setText("You need to fill in the contact number field. This is the bottom box.");
+            }
+            if (view.info.getText().isEmpty() && view.field2.getText().isEmpty())
+            {
+                view.text1.setText("I can't work with empty values. Please fill in all boxes before continuing");
+                view.text2.setText("You need to fill in both boxes");
+                view.field2.setVisible(true);
             }
             else
             {
