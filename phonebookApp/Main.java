@@ -4,10 +4,8 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 /**
- * Write a description of JavaFX class Main here.
- *
- * @author (your name)
- * @version (a version number or a date)
+ * Executes the main application, which is an emulator of a mobile phone contact app in a simplified format.
+ * This class contains all of the containers needed for the rest of the application to work.
  */
 public class Main extends Application
 {

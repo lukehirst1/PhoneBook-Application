@@ -25,7 +25,7 @@ public class View
     Image contactIcon;
     ImageView iv;
     
-    String[] options = {"addContact", "removeContact", "listContacts", "help", "getContact", "openPhoneBook", "deleteBook", "deleteall"};
+    String[] options = {"addContact", "removeContact", "listContacts", "help", "getContact", "openPhoneBook", "deleteBook", "deleteall", "exit"};
     
     GridPane gP;
     TilePane buttonPane;
@@ -59,7 +59,7 @@ public class View
         iv = new ImageView(contactIcon);
         gP.add(iv, 1, 3);
         
-        String[] buttonText = { "Add Contact", "Remove Contact", "List Contacts", "Help", "Get Contact", "Open Phonebook", "Delete book", "Delete All contacts" };
+        String[] buttonText = { "Add Contact", "Remove Contact", "List Contacts", "Help", "Get Contact", "Open Phonebook", "Delete book", "Delete All contacts", "Close Program" };
         
         for(String text : buttonText) {
             Button btn = new Button(text);

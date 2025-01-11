@@ -93,7 +93,15 @@ public class Model
                 }
                 default:
                 {
-                    return;
+                    try
+                    {
+                        help = view.info.getText();
+                    }
+                    catch (Exception e)
+                    {
+                        view.text1.setText("Not recognised. Please try again");
+                        return;   
+                    }
                 }
         }
     }
@@ -121,12 +129,14 @@ public class Model
     
     /**
      * Lists all contacts if a phonebook is not null.
+     * Utilises the terminal window to read the files, as opposed to text fields.
      */
     public void listContacts()
     {
         if (sPB == null) 
         {
             view.text1.setText("No phonebook loaded");
+            view.text2.setText("");
         }
         
         else
@@ -136,6 +146,7 @@ public class Model
                 String file = view.info.getText();
                FileReader fr = new FileReader(file);
                int content = fr.read();
+               view.text1.setText("File opened");
                while (content != -1)
                {
                    System.out.print((char)content);
@@ -146,6 +157,8 @@ public class Model
             catch (Exception e)
             {
                 view.text1.setText("File not recognised");
+                view.text2.setText("");
+                view.field2.setVisible(false);
             }
         }
     }
@@ -158,6 +171,7 @@ public class Model
         if (sPB == null)
         {
             view.text1.setText("No phonebook loaded");
+            view.text2.setText("");
             view.field2.setVisible(false);
         }
         else
@@ -165,32 +179,47 @@ public class Model
             String addName = view.info.getText();
             String addNumber = view.field2.getText();
             
-        if (view.info.getText().isEmpty())
-        {
-            view.text1.setText("Sorry, I cannot add empty values to the file. Please fill in all boxes before continuing");
-            view.text2.setText("You need to fill in the contact name field. This is the top box.");
-        }
-        if (view.field2.getText().isEmpty())
-        {
-            view.text1.setText("Sorry, I cannot add empty values to the file. Please fill in all boxes before continuing");
-            view.text2.setText("You need to fill in the contact number field. This is the bottom box.");
-        }
-        if (view.info.getText().isEmpty() && view.field2.getText().isEmpty())
-        {
-            view.text1.setText("I can't work with empty values. Please fill in all boxes before continuing");
-            view.text2.setText("You need to fill in both boxes");
-            view.field2.setVisible(true);
-        }
-        else
-        {
-            view.text1.setText("Contact added to phone book");
-            view.text2.setText("What would you like to do next?");
-            view.field2.setText("");
-            sPB.addPhoneNumber(addName, addNumber);
-            sPB.save();
+            /**
+             * does the value contain numbers?
+             */
+            if (addName.matches("[0-9]+") || addNumber.matches("[A-Z, a-z, !, £, ., ?, ~, #, @, ;, |]+"))
+            {
+                /**
+                 * Restrict the info from being added.
+                 */
+                view.text1.setText("ERROR: Illegal value!");
+                view.text2.setText("Illegal values are not allowed in the field(s)");
+            }
+            else
+            {
+                if (view.info.getText().isEmpty())
+                {
+                    view.text1.setText("Sorry, I cannot add empty values to the file. Please fill in all boxes before continuing");
+                    view.text2.setText("You need to fill in the contact name field. This is the top box.");
+                }
+                if (view.field2.getText().isEmpty())
+                {
+                    view.text1.setText("Sorry, I cannot add empty values to the file. Please fill in all boxes before continuing");
+                    view.text2.setText("You need to fill in the contact number field. This is the bottom box.");
+                    view.field2.setVisible(true);
+                }
+                if (view.info.getText().isEmpty() && view.field2.getText().isEmpty())
+                {
+                    view.text1.setText("I can't work with empty values. Please fill in all boxes before continuing");
+                    view.text2.setText("You need to fill in both boxes");
+                    view.field2.setVisible(true);
+                }
+                else if (!view.info.getText().isEmpty() && !view.field2.getText().isEmpty())
+                {
+                    view.text1.setText("Contact added to phone book");
+                    view.text2.setText("What would you like to do next?");
+                    view.field2.setText("");
+                    sPB.addPhoneNumber(addName, addNumber);
+                    sPB.save();
+                }
+            }
         }
     }
-}
          /**
           * This is old code from the console app. For legacy purposes, this will be kept here.
           */   
@@ -274,27 +303,28 @@ public class Model
                  view.text2.setText("");
             }
             
-            if (view.info.getText().isEmpty())
+            else if (view.info.getText().isEmpty())
             {
                 view.text1.setText("Sorry, I cannot get empty values from the file. Please fill in all boxes before continuing");
                 view.text2.setText("You need to fill in the contact name field. This is the top box.");
-            }
-            if (view.field2.getText().isEmpty())
-            {
-                view.text1.setText("Sorry, I cannot get empty values from the file. Please fill in all boxes before continuing");
-                view.text2.setText("You need to fill in the contact number field. This is the bottom box.");
-            }
-            if (view.info.getText().isEmpty() && view.field2.getText().isEmpty())
-            {
-                view.text1.setText("I can't work with empty values. Please fill in all boxes before continuing");
-                view.text2.setText("You need to fill in both boxes");
-                view.field2.setVisible(true);
+                view.field2.setVisible(false);
             }
             else
             {
                 String name = view.info.getText();
                 String number = sPB.getPhoneNumber(name);
-                view.text1.setText("The following contact details are: " + "Name of contact: " + name + " Number: " + number);
+                
+                if (name.matches("[0-9, !, £, ., ?, ~, #, @, ;, |], +"))
+                {
+                    view.text1.setText("ERROR: Illegal value!");
+                    view.text2.setText("Illegal values are not allowed in the field!!");
+                }
+                else
+                {
+                    view.text1.setText("The following contact details are: ");
+                    view.text2.setText("Name of contact: " + name + " Number: " + number);
+                    view.field2.setVisible(true);
+                }
             }
     }
     
@@ -306,6 +336,7 @@ public class Model
         if (sPB == null)
         {
             view.text1.setText("Sorry, you have no phonebook loaded.");
+            view.text2.setText("");
         }
         else
         {
@@ -315,32 +346,41 @@ public class Model
             // Redundant - System.out.println("Please input the name and number of the contact you would like to delete from the phonebook.");
             String name = view.info.getText();
             String number = view.field2.getText();
+            view.field2.setVisible(true);
             
-            /**
-             * Are the fields filled in properly?
-             */
-            if (view.info.getText().isEmpty())
+            if (name.matches("[0-9]+") || number.matches("[A-Z, a-z, !, £, ., ?, ~, #, @, ;, |]+"))
             {
-                view.text1.setText("I can't delete a contact without both fields being filled in.");
-                view.text2.setText("You need to fill in the top field.");
-            }
-            if (view.field2.getText().isEmpty())
-            {
-                view.text1.setText("I can't delete a contact without both fields being filled in.");
-                view.text2.setText("You need to fill in the bottom field.");
-            }
-            if (view.field2.getText().isEmpty() && view.info.getText().isEmpty())
-            {
-                view.text1.setText("I can't delete a contact without both fields being filled in.");
-                view.text2.setText("You need to fill in both fields.");
+                view.text1.setText("ERROR: Illegal value!");
+                view.text2.setText("Illegal values are not allowed in the field(s)");
             }
             else
             {
-                // Confirms that the contact has been removed from phone book.
-                view.text1.setText("Contact deleted from phone book");
-                view.text2.setText("What would you like to do next?");
-                sPB.removePhoneNumber(name, number);
-                sPB.save();   
+                /**
+                 * Are the fields filled in properly?
+                 */
+                if (view.info.getText().isEmpty())
+                {
+                    view.text1.setText("I can't delete a contact without both fields being filled in.");
+                    view.text2.setText("You need to fill in the top field.");
+                }
+                if (view.field2.getText().isEmpty())
+                {
+                    view.text1.setText("I can't delete a contact without both fields being filled in.");
+                    view.text2.setText("You need to fill in the bottom field.");
+                }
+                if (view.field2.getText().isEmpty() && view.info.getText().isEmpty())
+                {
+                    view.text1.setText("I can't delete a contact without both fields being filled in.");
+                    view.text2.setText("You need to fill in both fields.");
+                }
+                else if (!view.info.getText().isEmpty() && !view.field2.getText().isEmpty())
+                {
+                    // Confirms that the contact has been removed from phone book.
+                    view.text1.setText("Contact deleted from phone book");
+                    view.text2.setText("What would you like to do next?");
+                    sPB.removePhoneNumber(name, number);
+                    sPB.save();   
+                }
             }
         }
     }
@@ -352,20 +392,23 @@ public void deleteAll()
     if (sPB == null)
     {
         view.text1.setText("Sorry, you have no phonebook loaded.");
+        view.text2.setText("");
     }
     else
     {
         view.text1.setText("WARNING! THIS WILL CLEAR YOUR CURRENT PHONE BOOK!");
         view.text2.setText("Do you wish to proceed?");
+        view.text3.setText("");
+        view.field2.setVisible(false);
         String confirm = view.info.getText();
         switch (confirm)
-        {
+        {    
             case "no", "No":
             {
                 view.text1.setText("Returning to menu");
                 view.text1.setText("What would you like to do next?");
                 view.text2.setText("");
-                return;
+                break;
             }
             case "yes", "Yes":
             {
@@ -378,15 +421,24 @@ public void deleteAll()
                 {
                     sPB.phoneNumbers.clear();
                     view.text1.setText("Phone book cleared.");
-                    view.text2.setText("");
+                    view.field2.setVisible(true);
+                    view.text2.setText("What action would you like to perform next");
                     sPB.save();
                     break;
                 }
             }
             default:
-            {
-                break;
-            }
+                {
+                    try
+                    {
+                        confirm = view.info.getText();
+                    }
+                    catch (Exception e)
+                    {
+                        view.text1.setText("Sorry, this command is not recognised. Please try again");
+                        break;
+                    }
+                }
         }
     }
 }
@@ -398,12 +450,14 @@ public void deleteAll()
         if (sPB == null)
         {
             view.text1.setText("Sorry, you have no phonebook loaded.");
+            view.text2.setText("");
         }
         else
         {
             view.text1.setText("WARNING! THIS WILL DELETE THE CURRENT PHONE BOOK!");
             view.text2.setText("THIS CHANGE IS IRREVERSIBLE!!");
             view.text3.setText("Do you wish to proceed?");
+            view.field2.setVisible(false);
             String confirm = view.info.getText();
             
             switch (confirm)
@@ -413,7 +467,7 @@ public void deleteAll()
                     view.text1.setText("What would you like to do next?");
                     view.text2.setText("");
                     view.text3.setText("");
-                    return;
+                    break;
                 }
                 case "yes", "Yes":
                 {
@@ -422,20 +476,29 @@ public void deleteAll()
                         view.text1.setText("Sorry, you have no phonebook loaded.");
                         view.text2.setText("");
                         view.text3.setText("");
-                        return;
+                        break;
                     }
                     else
                     {
                         sPB.delete();
                         view.text1.setText("File deleted.");
                         view.text2.setText("What would you like to do next?");
+                        view.field2.setVisible(true);
                         view.text3.setText("");
-                        return;
+                        break;
                     }
                 }
                 default:
                 {
-                    break;
+                    try
+                    {
+                        confirm = view.info.getText();
+                    }
+                    catch (Exception e)
+                    {
+                        view.text1.setText("Sorry, this command is not recognised. Please try again");
+                        break;
+                    }
                 }
             }
         }

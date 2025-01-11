@@ -48,6 +48,10 @@ public class Controller
                 model.HelpRequested();
                 break;
                 
+            case "Close Program":
+                model.endProgram();
+                break;
+                
             default:
                 break;
         }
