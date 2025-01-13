@@ -16,7 +16,7 @@ public class PhoneBook
      * TreeMap is an ordered map, so when we loop over the map, the entries are
      * in alphabetical order.
      */
-    protected TreeMap<String, String> phoneNumbers;
+    public TreeMap<String, String> phoneNumbers;
     View view = new View();
 
     /**

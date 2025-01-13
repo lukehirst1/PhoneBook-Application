@@ -61,6 +61,7 @@ public class Model
         commands.add("Nope, that was all thanks!");
         commands.add("no");
         commands.add("No");
+        commands.add("create a new phonebook");
         
         switch (help)
         {
@@ -80,7 +81,7 @@ public class Model
                 break;
             }
             
-            case "Open a Phonebook", "open phonebook", "How do I open a phonebook?":
+            case "Open a Phonebook", "open phonebook", "How do I open a phonebook?, create a new phonebook.":
             {
                 view.text1.setText("To open a phonebook, navigate to Open Phonebook, and write the phonebook that you wish to open in the text field.");
                 view.text2.setText("Is there anything else I can help you with?");
@@ -214,17 +215,25 @@ public class Model
         {
             String addName = view.info.getText();
             String addNumber = view.field2.getText();
+            String nameRegex = ".*[0-9].+";
+            String numberRegex = ".*[A-Z, a-z, !, £, ., ?, ~, #, @, ;, |].+";
             
             /**
              * does the value contain numbers?
              */
-            if (addName.matches("[0-9]+") || addNumber.matches("[A-Z, a-z, !, £, ., ?, ~, #, @, ;, |]+"))
+            if (addName.matches(nameRegex) || addNumber.matches(numberRegex))
             {
                 /**
                  * Restrict the info from being added.
                  */
                 view.text1.setText("ERROR: Illegal value!");
                 view.text2.setText("Illegal values are not allowed in the field(s)");
+            }
+            
+            else if (addNumber.length() != 11 && !view.field2.getText().isEmpty())
+            {
+                view.text1.setText("Number anomaly found. Please try again");
+                view.text2.setText("");
             }
             else
             {
@@ -349,12 +358,14 @@ public class Model
             {
                 String name = view.info.getText();
                 String number = sPB.getPhoneNumber(name);
+                String nameRegex = ".*[0-9].+";
                 
-                if (name.matches("[0-9]+"))
+                if (name.matches(nameRegex))
                 {
                     view.text1.setText("ERROR: Illegal value!");
                     view.text2.setText("Illegal values are not allowed in the field!!");
                 }
+                
                 else if (!view.info.getText().isEmpty())
                 {
                     view.text1.setText("The following contact details are: ");
@@ -383,11 +394,18 @@ public class Model
             String name = view.info.getText();
             String number = view.field2.getText();
             view.field2.setVisible(true);
+            String nameRegex = ".*[0-9].+";
+            String numberRegex = ".*[A-Z, a-z, !, £, ., ?, ~, #, @, ;, |].+";
             
-            if (name.matches("[0-9]+") || number.matches("[A-Z, a-z, !, £, ., ?, ~, #, @, ;, |]+"))
+            if (name.matches(nameRegex) || number.matches(numberRegex))
             {
                 view.text1.setText("ERROR: Illegal value!");
                 view.text2.setText("Illegal values are not allowed in the field(s)");
+            }
+            else if (number.length() != 11 && !view.field2.getText().isEmpty())
+            {
+                view.text1.setText("Number anomaly found. Please try again");
+                view.text2.setText("");
             }
             else
             {
