@@ -1,5 +1,6 @@
 package phonebookApp;
 import java.io.FileReader;
+import java.util.ArrayList;
 
 /**
  * Write a description of class Model here.
@@ -19,6 +20,10 @@ public class Model
      */
     public void endProgram()
     {
+        view.text1.setText("Goodbye!");
+        view.text2.setText("");
+        view.text3.setText("");
+        view.field2.setVisible(false);
         System.exit(0);
     }
     
@@ -28,6 +33,34 @@ public class Model
         view.text2.setText("");
         String help = view.info.getText();
         view.field2.setVisible(false);
+        ArrayList<String> commands = new ArrayList();
+        commands.add("Removing a contact");
+        commands.add("remove contact");
+        commands.add("How do I remove a contact?");
+        commands.add("Adding a contact");
+        commands.add("add contact");
+        commands.add("How do I add a contact to an existing phonebook?");
+        commands.add("How do I add a contact?");
+        commands.add("Open a Phonebook");
+        commands.add("open phonebook");
+        commands.add("How do I open a phonebook?");
+        commands.add("List all contacts");
+        commands.add("list contacts");
+        commands.add("How can I list all of my contacts?");
+        commands.add("Get a contact");
+        commands.add("get contact");
+        commands.add("How can I get a contact's information?");
+        commands.add("Delete a phonebook");
+        commands.add("Delete book");
+        commands.add("How can I delete a phonebook?");
+        commands.add("Delete all contacts");
+        commands.add("How can I delete all contacts from a phonebook?");
+        commands.add("That was all");
+        commands.add("No thanks");
+        commands.add("Thank you, but no");
+        commands.add("Nope, that was all thanks!");
+        commands.add("no");
+        commands.add("No");
         
         switch (help)
         {
@@ -82,6 +115,7 @@ public class Model
                     view.text1.setText("To remove all contacts from the phoneBook, you need to ensure that a active phoneBook is loaded.");
                     view.text2.setText("Then, you navigate to Delete All contacts and Delete All contacts");
                     view.text3.setText("Is there anything else I can help you with?");
+                    break;
             }
             
             case "That was all", "No thanks", "Thank you, but no", "Nope, that was all thanks!", "no", "No":
@@ -89,20 +123,21 @@ public class Model
                     view.text1.setText("Glad to hear it. Please don't hesitate to ask again");
                     view.text2.setText("What would you like to do next?");
                     view.text3.setText("");
+                    view.field2.setVisible(true);
                     return;
                 }
-                default:
+            default:
+           {
+                if (!commands.contains(help) && !view.info.getText().isEmpty())
                 {
-                    try
-                    {
-                        help = view.info.getText();
-                    }
-                    catch (Exception e)
-                    {
-                        view.text1.setText("Not recognised. Please try again");
-                        return;   
-                    }
+                    view.text1.setText("The value: " + help + " appears to not be a parameter.");
+                    view.text2.setText("Please try another command");
                 }
+                else if (commands.contains(help) && !view.info.getText().isEmpty())
+                {
+                    return;
+                }
+            }
         }
     }
     
@@ -124,6 +159,7 @@ public class Model
             sPB.load();
             view.text1.setText("Phonebook name: " + filename + " loaded");
             view.text2.setText("The following options are: Add a Contact, Remove a contact, list contacts, open phoneBook, deleteBook, delete All contacts");
+            view.field2.setVisible(true);
         }
     }
     
@@ -314,12 +350,12 @@ public class Model
                 String name = view.info.getText();
                 String number = sPB.getPhoneNumber(name);
                 
-                if (name.matches("[0-9, !, £, ., ?, ~, #, @, ;, |], +"))
+                if (name.matches("[0-9]+"))
                 {
                     view.text1.setText("ERROR: Illegal value!");
                     view.text2.setText("Illegal values are not allowed in the field!!");
                 }
-                else
+                else if (!view.info.getText().isEmpty())
                 {
                     view.text1.setText("The following contact details are: ");
                     view.text2.setText("Name of contact: " + name + " Number: " + number);
@@ -401,6 +437,12 @@ public void deleteAll()
         view.text3.setText("");
         view.field2.setVisible(false);
         String confirm = view.info.getText();
+        ArrayList<String> confirmation = new ArrayList();
+        confirmation.add("no");
+        confirmation.add("No");
+        confirmation.add("yes");
+        confirmation.add("Yes");
+        
         switch (confirm)
         {    
             case "no", "No":
@@ -428,19 +470,19 @@ public void deleteAll()
                 }
             }
             default:
+            {
+                if (!confirmation.contains(confirm) && !view.info.getText().isEmpty())
                 {
-                    try
-                    {
-                        confirm = view.info.getText();
-                    }
-                    catch (Exception e)
-                    {
-                        view.text1.setText("Sorry, this command is not recognised. Please try again");
-                        break;
-                    }
+                    view.text1.setText("The value: " + confirm + " appears to not be a parameter.");
+                    view.text2.setText("Please try another command");
+                }
+                else if (confirmation.contains(confirm) && !view.info.getText().isEmpty())
+                {
+                    return;
                 }
         }
     }
+}
 }
     /**
      * Deletes a phoneBook from the system.
@@ -459,6 +501,11 @@ public void deleteAll()
             view.text3.setText("Do you wish to proceed?");
             view.field2.setVisible(false);
             String confirm = view.info.getText();
+            ArrayList<String> confirmation = new ArrayList();
+            confirmation.add("no");
+            confirmation.add("No");
+            confirmation.add("yes");
+            confirmation.add("Yes");
             
             switch (confirm)
             {
@@ -490,14 +537,15 @@ public void deleteAll()
                 }
                 default:
                 {
-                    try
+                    if (!confirmation.contains(confirm) && !view.info.getText().isEmpty())
                     {
-                        confirm = view.info.getText();
+                        view.text1.setText("The value: " + confirm + " appears to not be a parameter.");
+                        view.text2.setText("Please try another command");
+                        view.text3.setText("");
                     }
-                    catch (Exception e)
+                    else if (confirmation.contains(confirm) && !view.info.getText().isEmpty())
                     {
-                        view.text1.setText("Sorry, this command is not recognised. Please try again");
-                        break;
+                        return;
                     }
                 }
             }
