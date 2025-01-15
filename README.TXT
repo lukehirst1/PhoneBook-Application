@@ -13,6 +13,8 @@ USER INSTRUCTIONS:
 
 * To begin the program, right click on MAIN, and select the top option (Run JavaFX application)
 * If you need any help at any point, please use the help button, and write your query in the box.
+* Phone digits are 11 long. The program is trained to reject anything above or below it.
+* This program utilises Regular Expressions to ban values that do not belong in boxes.
 
 * NOTE: Most of the program will use labels, except for list contacts, which opens the terminal window, and displays the contents of the phonebook file. Please be reassured nothing has broke, and everything is working as intended.
 

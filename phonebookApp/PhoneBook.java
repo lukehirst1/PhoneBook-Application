@@ -1,6 +1,7 @@
 package phonebookApp;
 
 import java.util.TreeMap;
+import java.util.ArrayList;
 
 /**
  * A simple class to store a list of names and phone numbers.
@@ -16,8 +17,9 @@ public class PhoneBook
      * TreeMap is an ordered map, so when we loop over the map, the entries are
      * in alphabetical order.
      */
-    public TreeMap<String, String> phoneNumbers;
-    View view = new View();
+    protected TreeMap<String, String> phoneNumbers;
+    protected ArrayList<String> contacts = new ArrayList();
+    View view;
 
     /**
      * constructor for objects of class PhoneBook
@@ -48,6 +50,7 @@ public class PhoneBook
         // add the name and number pair to the map
         // note that there is no duplication check here - it simply overwrites
         phoneNumbers.put(name, number);
+        contacts.add(name);
     }
     /**
      * deletes a name and phone number from the PhoneBook
@@ -117,10 +120,5 @@ public class PhoneBook
     public void printListing()
     {
         System.out.print(listing());
-    }
-    
-    public void printListApp()
-    {
-        view.text1.setText(listingApp());
     }
 }

@@ -14,16 +14,13 @@ public class Model
     Controller controller;
     SavedPhoneBook sPB = null;
     PhoneBook phoneBook;
+    public String filename;
     
     /**
      * When finished, close the program.
      */
     public void endProgram()
     {
-        view.text1.setText("Goodbye!");
-        view.text2.setText("");
-        view.text3.setText("");
-        view.field2.setVisible(false);
         System.exit(0);
     }
     
@@ -31,6 +28,7 @@ public class Model
     {
         view.text1.setText("What do you need help with?");
         view.text2.setText("");
+        view.text3.setText("");
         String help = view.info.getText();
         view.field2.setVisible(false);
         ArrayList<String> commands = new ArrayList();
@@ -44,6 +42,8 @@ public class Model
         commands.add("Open a Phonebook");
         commands.add("open phonebook");
         commands.add("How do I open a phonebook?");
+        commands.add("create a new phonebook");
+        commands.add("create a phonebook");
         commands.add("List all contacts");
         commands.add("list contacts");
         commands.add("How can I list all of my contacts?");
@@ -61,7 +61,8 @@ public class Model
         commands.add("Nope, that was all thanks!");
         commands.add("no");
         commands.add("No");
-        commands.add("create a new phonebook");
+        commands.add("nope");
+        commands.add("Nope");
         
         switch (help)
         {
@@ -81,10 +82,11 @@ public class Model
                 break;
             }
             
-            case "Open a Phonebook", "open phonebook", "How do I open a phonebook?, create a new phonebook.":
+            case "Open a Phonebook", "open phonebook", "How do I open a phonebook?", "create a new phonebook", "create a phonebook":
             {
                 view.text1.setText("To open a phonebook, navigate to Open Phonebook, and write the phonebook that you wish to open in the text field.");
                 view.text2.setText("Is there anything else I can help you with?");
+                view.text3.setText("");
                 break;
             }
             
@@ -92,6 +94,7 @@ public class Model
             {
                 view.text1.setText("To list all contacts in a phonebook, navigate to List Contacts, and click the button");
                 view.text2.setText("Please note: This will open a seperate console window, which can be closed without shutting down the program");
+                view.text3.setText("");
                 break;
             }
             
@@ -119,7 +122,7 @@ public class Model
                     break;
             }
             
-            case "That was all", "No thanks", "Thank you, but no", "Nope, that was all thanks!", "no", "No":
+            case "That was all", "No thanks", "Thank you, but no", "Nope, that was all thanks!", "no", "No", "nope", "Nope":
                 {
                     view.text1.setText("Glad to hear it. Please don't hesitate to ask again");
                     view.text2.setText("What would you like to do next?");
@@ -133,10 +136,11 @@ public class Model
                 {
                     view.text1.setText("The value: " + help + " appears to not be a parameter.");
                     view.text2.setText("Please try another command");
+                    view.text3.setText("");
                 }
                 else if (commands.contains(help) && !view.info.getText().isEmpty())
                 {
-                    return;
+                    break;
                 }
             }
         }
@@ -155,7 +159,7 @@ public class Model
         }
         else
         {
-            String filename = view.info.getText();
+            filename = view.info.getText();
             sPB = new SavedPhoneBook(filename);
             sPB.load();
             view.text1.setText("Phonebook name: " + filename + " loaded");
@@ -180,10 +184,10 @@ public class Model
         {
             try
             {
-                String file = view.info.getText();
-               FileReader fr = new FileReader(file);
+               filename = view.info.getText();
+               FileReader fr = new FileReader(filename);
                int content = fr.read();
-               view.text1.setText("File opened");
+               view.text1.setText("File opened, please open the terminal window (CTRL + T)");
                while (content != -1)
                {
                    System.out.print((char)content);
@@ -193,7 +197,7 @@ public class Model
             }
             catch (Exception e)
             {
-                view.text1.setText("File not recognised");
+                view.text1.setText("File not recognised. Please try again.");
                 view.text2.setText("");
                 view.field2.setVisible(false);
             }
@@ -260,11 +264,12 @@ public class Model
                     view.text2.setText("What would you like to do next?");
                     view.field2.setText("");
                     sPB.addPhoneNumber(addName, addNumber);
+                    sPB.contacts.add(addName);
                     sPB.save();
                 }
-            }
         }
     }
+}
          /**
           * This is old code from the console app. For legacy purposes, this will be kept here.
           */   
@@ -360,13 +365,19 @@ public class Model
                 String number = sPB.getPhoneNumber(name);
                 String nameRegex = ".*[0-9].+";
                 
+                if (!sPB.contacts.contains(name) && !view.info.getText().isEmpty())
+                {
+                    view.text1.setText("I was unable to find that contact");
+                    view.text2.setText("Please ensure you have added that contact to the file");
+                }
+                
                 if (name.matches(nameRegex))
                 {
                     view.text1.setText("ERROR: Illegal value!");
                     view.text2.setText("Illegal values are not allowed in the field!!");
                 }
                 
-                else if (!view.info.getText().isEmpty())
+                else if (sPB.contacts.contains(name) && !view.info.getText().isEmpty())
                 {
                     view.text1.setText("The following contact details are: ");
                     view.text2.setText("Name of contact: " + name + " Number: " + number);
@@ -460,17 +471,23 @@ public void deleteAll()
         confirmation.add("No");
         confirmation.add("yes");
         confirmation.add("Yes");
+        confirmation.add("Nope");
+        confirmation.add("nope");
+        confirmation.add("yeah");
+        confirmation.add("yep");
+        confirmation.add("Yeah");
+        confirmation.add("Yep");
         
         switch (confirm)
         {    
-            case "no", "No":
+            case "no", "No", "Nope", "nope":
             {
                 view.text1.setText("Returning to menu");
                 view.text1.setText("What would you like to do next?");
                 view.text2.setText("");
                 break;
             }
-            case "yes", "Yes":
+            case "yes", "Yes", "yep", "yeah", "Yep", "Yeah":
             {
                 if (sPB == null)
                 {
@@ -524,17 +541,23 @@ public void deleteAll()
             confirmation.add("No");
             confirmation.add("yes");
             confirmation.add("Yes");
+            confirmation.add("Nope");
+            confirmation.add("nope");
+            confirmation.add("yeah");
+            confirmation.add("yep");
+            confirmation.add("Yeah");
+            confirmation.add("Yep");
             
             switch (confirm)
             {
-                case "no", "No":
+                case "no", "No", "Nope", "nope":
                 {
                     view.text1.setText("What would you like to do next?");
                     view.text2.setText("");
                     view.text3.setText("");
                     break;
                 }
-                case "yes", "Yes":
+                case "yes", "Yes", "yep", "yeah", "Yep", "Yeah":
                 {
                     if (sPB == null)
                     {
